@@ -8,7 +8,7 @@ metadata:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mariadb-pvc
+  name: mysql-pvc
   namespace: database-namespace
 spec:
   accessModes:
@@ -21,15 +21,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb-service
+  name: mysql-service
   namespace: database-namespace
 spec:
   selector:
-    app: mariadb
+    app: mysql
   type: ClusterIP
   ports:
     - protocol: TCP
-      port: 10001
+      port: 10002
       targetPort: 3306
 ---
 # Deployment für die MariaDB-Datenbank, die in einem Pod läuft. Das Deployment stellt sicher, dass immer die Anzahl an gewünschte Pods laufen. Der Pod wird mit einem PersistentVolumeClaim verbunden, um die Daten zu speichern.
@@ -37,21 +37,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mariadb-deployment
+  name: mysql-deployment
   namespace: database-namespace
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mariadb
+      app: mysql
   template:
     metadata:
       labels:
-        app: mariadb
+        app: mysql
     spec:
       containers:
-        - name: mariadb
-          image: mariadb:11.8.8-ubi9
+        - name: mysql
+          image: mysql:9.7.2-oraclelinux9
           ports:
             - containerPort: 3306
           env:
@@ -60,9 +60,9 @@ spec:
             - name: MARIADB_DATABASE
               value: "test"
           volumeMounts:
-            - name: mariadb-storage
+            - name: mysql-storage
               mountPath: /var/lib/mysql
       volumes:
-        - name: mariadb-storage
+        - name: mysql-storage
           persistentVolumeClaim:
-            claimName: mariadb-pvc
+            claimName: mysql-pvc
