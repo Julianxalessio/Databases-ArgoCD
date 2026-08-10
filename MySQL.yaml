@@ -1,9 +1,3 @@
-# Art Folder in dem die Resource-Dateien für die MariaDB-Datenbank in Kubernetes gespeichert werden.
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: database-namespace
----
 # PersistentVolumeClaim für die MariaDB-Datenbank, dass beim löschen des Pods die Daten nicht verloren gehen.
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -55,10 +49,8 @@ spec:
           ports:
             - containerPort: 3306
           env:
-            - name: MARIADB_ROOT_PASSWORD
+            - name: MYDWLD_ROOT_PASSWORD
               value: "change-me"
-            - name: MARIADB_DATABASE
-              value: "test"
           volumeMounts:
             - name: mysql-storage
               mountPath: /var/lib/mysql
