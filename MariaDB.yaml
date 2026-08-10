@@ -23,10 +23,10 @@ metadata:
 spec:
   selector:
     app: mariadb
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - protocol: TCP
-      port: 3306
+      port: 10001
       targetPort: 3306
 ---
 apiVersion: apps/v1
