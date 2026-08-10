@@ -1,4 +1,4 @@
-# PersistentVolumeClaim für die MariaDB-Datenbank, dass beim löschen des Pods die Daten nicht verloren gehen.
+# PersistentVolumeClaim für die MySQL-Datenbank, dass beim löschen des Pods die Daten nicht verloren gehen.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -11,7 +11,7 @@ spec:
     requests:
       storage: 5Gi
 ---
-# Weiterleitung des Ports 3306 der MariaDB-Datenbank auf den Port 10001 des lokalen Rechners, damit man über den lokalen Rechner auf die Datenbank zugreifen kann.
+# Weiterleitung des Ports 3306 der MySQL-Datenbank auf den Port 10002 des lokalen Rechners, damit man über den lokalen Rechner auf die Datenbank zugreifen kann.
 apiVersion: v1
 kind: Service
 metadata:
@@ -26,7 +26,7 @@ spec:
       port: 10002
       targetPort: 3306
 ---
-# Deployment für die MariaDB-Datenbank, die in einem Pod läuft. Das Deployment stellt sicher, dass immer die Anzahl an gewünschte Pods laufen. Der Pod wird mit einem PersistentVolumeClaim verbunden, um die Daten zu speichern.
+# Deployment für die MySQL-Datenbank, die in einem Pod läuft. Das Deployment stellt sicher, dass immer die Anzahl an gewünschte Pods laufen. Der Pod wird mit einem PersistentVolumeClaim verbunden, um die Daten zu speichern.
 # Ebenfalls werden Umgebungsvariablen für das Root-Passwort und den Datenbanknamen gesetzt.
 apiVersion: apps/v1
 kind: Deployment
