@@ -24,7 +24,7 @@ spec:
   ports:
     - protocol: TCP
       port: 10003
-      targetPort: 3306
+      targetPort: 5432
 ---
 # Deployment für die PostGreSQL-Datenbank, die in einem Pod läuft. Das Deployment stellt sicher, dass immer die Anzahl an gewünschte Pods laufen. Der Pod wird mit einem PersistentVolumeClaim verbunden, um die Daten zu speichern.
 # Ebenfalls werden Umgebungsvariablen für das Root-Passwort und den Datenbanknamen gesetzt.
@@ -47,7 +47,7 @@ spec:
         - name: postgresql
           image: postgres:17.10-trixie
           ports:
-            - containerPort: 3306
+            - containerPort: 5432
           env:
             - name: POSTGRES_PASSWORD
               value: "change-me"
