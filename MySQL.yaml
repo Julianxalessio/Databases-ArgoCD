@@ -20,10 +20,11 @@ metadata:
 spec:
   selector:
     app: mysql
-  type: ClusterIP
+  type: NodePort
   ports:
     - protocol: TCP
-      port: 10002
+      nodePort: 10004
+      port: 3306
       targetPort: 3306
 ---
 # Deployment für die MySQL-Datenbank, die in einem Pod läuft. Das Deployment stellt sicher, dass immer die Anzahl an gewünschte Pods laufen. Der Pod wird mit einem PersistentVolumeClaim verbunden, um die Daten zu speichern.
