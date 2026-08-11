@@ -23,7 +23,7 @@ spec:
   type: ClusterIP
   ports:
     - protocol: TCP
-      port: 10003
+      port: 5432
       targetPort: 5432
 ---
 # Deployment für die PostGreSQL-Datenbank, die in einem Pod läuft. Das Deployment stellt sicher, dass immer die Anzahl an gewünschte Pods laufen. Der Pod wird mit einem PersistentVolumeClaim verbunden, um die Daten zu speichern.
