@@ -1,3 +1,9 @@
+# Art Folder in dem die Resource-Dateien für die MariaDB-Datenbank in Kubernetes gespeichert werden.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database-namespace
+---
 # PersistentVolumeClaim für die MariaDB-Datenbank, dass beim löschen des Pods die Daten nicht verloren gehen.
 apiVersion: v1
 kind: PersistentVolumeClaim
