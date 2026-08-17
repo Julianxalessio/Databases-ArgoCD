@@ -113,7 +113,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: mariadb-secure-installation
-  namespace: database-namespace
 spec:
   backoffLimit: 10
 
@@ -140,7 +139,7 @@ spec:
 
               until mariadb \
                 -h mariadb-service \
-                -P 3306 \
+                -P 10001 \
                 -u root \
                 -p"${MARIADB_ROOT_PASSWORD}" \
                 -e "SELECT 1" >/dev/null 2>&1
