@@ -17,7 +17,7 @@ metadata:
   namespace: database-namespace
 type: Opaque
 stringData:
-  root-password: "DEIN_ROOT_PASSWORT"
+  root-password: "BBZbl12345!"
 
 ---
 # ============================================================
