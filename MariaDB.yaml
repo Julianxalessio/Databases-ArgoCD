@@ -111,37 +111,27 @@ metadata:
   name: mariadb-secure-installation
   namespace: database-namespace
 spec:
-  backoffLimit: 10
-
+  backoffLimit: 3
   template:
     metadata:
       labels:
         app: mariadb-secure-installation
     spec:
       restartPolicy: OnFailure
-
       containers:
         - name: secure-installation
           image: mariadb:11.8.8-ubi9
-
           env:
             - name: MARIADB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mariadb-secret
                   key: root-password
-
-            - name: HOME
-              value: /tmp
-
-          volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-
           command:
             - /bin/bash
             - -c
             - |
+              set -e
               echo "Warte auf MariaDB..."
 
               until mariadb \
@@ -155,25 +145,14 @@ spec:
               done
 
               echo "MariaDB ist bereit."
-              echo "Starte mariadb-secure-installation..."
+              echo "Starte sichere Basiskonfiguration..."
 
-              printf '%s\n' \
-                "${MARIADB_ROOT_PASSWORD}" \
-                "n" \
-                "Y" \
-                "Y" \
-                "Y" \
-                "Y" \
-              | script -q -c \
-                "mariadb-secure-installation \
-                  -h mariadb-service \
-                  -P 10001 \
-                  -u root \
-                  -p${MARIADB_ROOT_PASSWORD}" \
-                /dev/null
+              mariadb -h mariadb-service -P 10001 -u root -p"${MARIADB_ROOT_PASSWORD}" -e "
+                DELETE FROM mysql.user WHERE User='';
+                DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost','127.0.0.1','::1');
+                DROP DATABASE IF EXISTS test;
+                DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+                FLUSH PRIVILEGES;
+              "
 
-              echo "mariadb-secure-installation abgeschlossen."
-
-      volumes:
-        - name: tmp
-          emptyDir: {}
+              echo "Sichere Basiskonfiguration abgeschlossen."
