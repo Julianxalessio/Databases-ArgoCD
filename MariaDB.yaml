@@ -134,29 +134,25 @@ spec:
               set -e
               echo "Warte auf MariaDB..."
 
-              until mariadb \
-                -h mariadb-service \
-                -P 10001 \
-                -u root \
-                -p"${MARIADB_ROOT_PASSWORD}" \
-                -e "SELECT 1" >/dev/null 2>&1
-              do
+              until mariadb -h mariadb-service -P 10001 -u root -p"${MARIADB_ROOT_PASSWORD}" -e "SELECT 1"; do
+                echo "Waiting for MariaDB..."
                 sleep 5
               done
 
               echo "MariaDB ist bereit."
               echo "Starte sichere Basiskonfiguration..."
-
-              mariadb -h mariadb-service -P 10001 -u root -p"${MARIADB_ROOT_PASSWORD}" -e "
+                  mariadb -h mariadb-service -P 10001 -u root -p"${MARIADB_ROOT_PASSWORD}" <<'SQL'
+                  CREATE USER IF NOT EXISTS 'admin'@'10.42.%' IDENTIFIED BY 'BBZbl12345!';
+                  GRANT ALL PRIVILEGES ON *.* TO 'admin'@'10.42.%' WITH GRANT OPTION;
+                  FLUSH PRIVILEGES;
+                  SQL
+              mariadb -h mariadb-service -P 10001 -u admin -p"BBZbl12345!" -e "
                 DELETE FROM mysql.user WHERE User='';
                 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost','127.0.0.1','::1');
                 DROP DATABASE IF EXISTS test;
                 DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
-                CREATE USER 'admin'@'10.42.%' IDENTIFIED BY 'BBZbl12345!';
-                GRANT ALL PRIVILEGES ON * TO 'admin'@'10.42.%';
                 FLUSH PRIVILEGES;
               "
 
               echo "Sichere Basiskonfiguration abgeschlossen."
 
-              
