@@ -105,10 +105,6 @@ spec:
             claimName: mariadb-pvc
 
 ---
-# ============================================================
-# Job
-# Führt tatsächlich mariadb-secure-installation aus
-# ============================================================
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -132,8 +128,15 @@ spec:
                   name: mariadb-secret
                   key: root-password
 
+            - name: HOME
+              value: /tmp
+
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+
           command:
-            - /bin/sh
+            - /bin/bash
             - -c
             - |
               echo "Warte auf MariaDB..."
@@ -148,10 +151,9 @@ spec:
                 sleep 5
               done
 
-              echo "MariaDB ist verfügbar."
+              echo "MariaDB ist bereit."
               echo "Starte mariadb-secure-installation..."
-              
-              # Because it is non-interactive add pre-defined answers to the prompts
+
               printf '%s\n' \
                 "${MARIADB_ROOT_PASSWORD}" \
                 "n" \
@@ -159,10 +161,16 @@ spec:
                 "Y" \
                 "Y" \
                 "Y" \
-              | mariadb-secure-installation \
-                -h mariadb-service \
-                -P 3306 \
-                -u root \
-                -p"${MARIADB_ROOT_PASSWORD}"
+              | script -q -c \
+                "mariadb-secure-installation \
+                  -h mariadb-service \
+                  -P 10001 \
+                  -u root \
+                  -p${MARIADB_ROOT_PASSWORD}" \
+                /dev/null
 
               echo "mariadb-secure-installation abgeschlossen."
+
+      volumes:
+        - name: tmp
+          emptyDir: {}
