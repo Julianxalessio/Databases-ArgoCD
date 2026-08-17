@@ -113,6 +113,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: mariadb-secure-installation
+  namespace: database-namespace
 spec:
   backoffLimit: 10
 
