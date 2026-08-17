@@ -152,7 +152,11 @@ spec:
                 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost','127.0.0.1','::1');
                 DROP DATABASE IF EXISTS test;
                 DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+                CREATE USER 'admin'@'10.42.%' IDENTIFIED BY 'BBZbl12345!';
+                GRANT ALL PRIVILEGES ON * TO 'admin'@'10.42.%';
                 FLUSH PRIVILEGES;
               "
 
               echo "Sichere Basiskonfiguration abgeschlossen."
+
+              
